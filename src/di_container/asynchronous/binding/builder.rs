@@ -116,6 +116,33 @@ where
         Ok(binding_scope_configurator)
     }
 
+    pub fn to_singleton<Implementation>(
+        self, singleton: Implementation
+    ) -> Result<
+        AsyncBindingScopeConfigurator<'di_container, Interface, Implementation>,
+        AsyncBindingBuilderError,
+    >
+    where
+        Implementation: AsyncInjectable<AsyncDIContainer>,
+    {
+        if self
+            .di_container
+            .has_binding::<Interface>(BindingOptions::new())
+        {
+            return Err(AsyncBindingBuilderError::BindingAlreadyExists(type_name::<
+                Interface,
+            >(
+            )));
+        }
+
+        self.di_container.set_binding::<Interface>(
+            BindingOptions::new(),
+            Box::new(crate::provider::r#async::SingletonProvider::new(singleton))
+        );
+
+        Ok(AsyncBindingWhenConfigurator::new(self.di_container))
+    }
+
     /// Creates a binding of factory type `Interface` to a factory inside of the
     /// associated [`AsyncDIContainer`].
     ///
