@@ -1,6 +1,7 @@
 //! Binding builder for types inside of a [`AsyncDIContainer`].
 use std::any::type_name;
 use std::marker::PhantomData;
+use std::sync::Arc;
 
 use crate::di_container::asynchronous::binding::scope_configurator::AsyncBindingScopeConfigurator;
 #[cfg(feature = "factory")]
@@ -9,6 +10,8 @@ use crate::di_container::BindingOptions;
 use crate::errors::async_di_container::AsyncBindingBuilderError;
 use crate::interfaces::async_injectable::AsyncInjectable;
 use crate::util::use_double;
+
+use super::when_configurator::AsyncBindingWhenConfigurator;
 
 use_double!(crate::dependency_history::DependencyHistory);
 use_double!(crate::di_container::asynchronous::AsyncDIContainer);
@@ -116,10 +119,11 @@ where
         Ok(binding_scope_configurator)
     }
 
+    /// test to_singleton method
     pub fn to_singleton<Implementation>(
         self, singleton: Implementation
     ) -> Result<
-        AsyncBindingScopeConfigurator<'di_container, Interface, Implementation>,
+        AsyncBindingWhenConfigurator<'di_container, Interface>,
         AsyncBindingBuilderError,
     >
     where
@@ -137,7 +141,7 @@ where
 
         self.di_container.set_binding::<Interface>(
             BindingOptions::new(),
-            Box::new(crate::provider::r#async::SingletonProvider::new(singleton))
+            Box::new(crate::provider::r#async::AsyncSingletonProvider::new(Arc::new(singleton)))
         );
 
         Ok(AsyncBindingWhenConfigurator::new(self.di_container))
