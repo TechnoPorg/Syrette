@@ -3,11 +3,11 @@ use std::any::type_name;
 use std::marker::PhantomData;
 
 use crate::di_container::asynchronous::binding::scope_configurator::AsyncBindingScopeConfigurator;
-#[cfg(feature = "factory")]
 use crate::di_container::asynchronous::binding::when_configurator::AsyncBindingWhenConfigurator;
 use crate::di_container::BindingOptions;
 use crate::errors::async_di_container::AsyncBindingBuilderError;
 use crate::interfaces::async_injectable::AsyncInjectable;
+use crate::ptr::TransientPtr;
 use crate::util::use_double;
 
 use_double!(crate::dependency_history::DependencyHistory);
@@ -339,8 +339,6 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    #[cfg(feature = "factory")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     pub fn to_default_factory<Return, FactoryFunc>(
         self,
         factory_func: &'static FactoryFunc,
@@ -350,7 +348,7 @@ where
     >
     where
         Return: 'static + ?Sized,
-        FactoryFunc: Fn(&AsyncDIContainer) -> BoxFn<(), crate::ptr::TransientPtr<Return>>
+        FactoryFunc: Fn(&AsyncDIContainer) -> Box<(dyn Fn() -> TransientPtr<Return> + Send + Sync)>
             + Send
             + Sync,
     {
@@ -430,8 +428,6 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    #[cfg(feature = "factory")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     pub fn to_async_default_factory<Return, FactoryFunc>(
         self,
         factory_func: &'static FactoryFunc,
@@ -441,7 +437,7 @@ where
     >
     where
         Return: 'static + ?Sized,
-        FactoryFunc: Fn(&AsyncDIContainer) -> BoxFn<(), crate::future::BoxFuture<'static, Return>>
+        FactoryFunc: Fn(&AsyncDIContainer) -> Box<(dyn Fn() -> TransientPtr<Return> + Send + Sync)>
             + Send
             + Sync,
     {

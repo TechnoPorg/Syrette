@@ -346,7 +346,6 @@ impl AsyncDIContainer
                         })?,
                 ))
             }
-            #[cfg(feature = "factory")]
             AsyncProvidable::Factory(factory_binding) => {
                 use crate::castable_factory::threadsafe::ThreadsafeCastableFactory;
 
@@ -360,7 +359,6 @@ impl AsyncDIContainer
 
                 Ok(SomePtr::ThreadsafeFactory(factory.call(self).into()))
             }
-            #[cfg(feature = "factory")]
             AsyncProvidable::DefaultFactory(binding) => {
                 use crate::castable_factory::threadsafe::ThreadsafeCastableFactory;
                 use crate::ptr::TransientPtr;
@@ -380,14 +378,13 @@ impl AsyncDIContainer
 
                 Ok(SomePtr::Transient(default_factory.call(self)()))
             }
-            #[cfg(feature = "factory")]
             AsyncProvidable::AsyncDefaultFactory(binding) => {
                 use crate::castable_factory::threadsafe::ThreadsafeCastableFactory;
                 use crate::future::BoxFuture;
                 use crate::ptr::TransientPtr;
 
                 type AsyncDefaultFactoryFn<Interface> = ThreadsafeCastableFactory<
-                    dyn Fn<(), Output = BoxFuture<'static, TransientPtr<Interface>>>
+                    dyn Fn() -> BoxFuture<'static, TransientPtr<Interface>>
                         + Send
                         + Sync,
                     AsyncDIContainer,

@@ -16,13 +16,9 @@ pub type SingletonPtr<Interface> = Rc<Interface>;
 pub type ThreadsafeSingletonPtr<Interface> = Arc<Interface>;
 
 /// A smart pointer to a factory.
-#[cfg(feature = "factory")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
 pub type FactoryPtr<FactoryInterface> = Rc<FactoryInterface>;
 
 /// A threadsafe smart pointer to a factory.
-#[cfg(feature = "factory")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
 pub type ThreadsafeFactoryPtr<FactoryInterface> = Arc<FactoryInterface>;
 
 macro_rules! create_as_variant_fn {
@@ -67,7 +63,6 @@ where
     Singleton(SingletonPtr<Interface>),
 
     /// A smart pointer to a factory.
-    #[cfg(feature = "factory")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     Factory(FactoryPtr<Interface>),
 
@@ -75,7 +70,6 @@ where
     ThreadsafeSingleton(ThreadsafeSingletonPtr<Interface>),
 
     /// A smart pointer to a factory.
-    #[cfg(feature = "factory")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     ThreadsafeFactory(ThreadsafeFactoryPtr<Interface>),
 }

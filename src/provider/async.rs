@@ -14,15 +14,12 @@ pub enum AsyncProvidable<DIContainerT>
 {
     Transient(TransientPtr<dyn AsyncInjectable<DIContainerT>>),
     Singleton(ThreadsafeSingletonPtr<dyn AsyncInjectable<DIContainerT>>),
-    #[cfg(feature = "factory")]
     Factory(
         crate::ptr::ThreadsafeFactoryPtr<dyn crate::any_factory::AnyThreadsafeFactory>,
     ),
-    #[cfg(feature = "factory")]
     DefaultFactory(
         crate::ptr::ThreadsafeFactoryPtr<dyn crate::any_factory::AnyThreadsafeFactory>,
     ),
-    #[cfg(feature = "factory")]
     AsyncDefaultFactory(
         crate::ptr::ThreadsafeFactoryPtr<dyn crate::any_factory::AnyThreadsafeFactory>,
     ),
@@ -170,16 +167,15 @@ where
     }
 }
 
-#[cfg(feature = "factory")]
 #[derive(Clone, Copy)]
 pub enum AsyncFactoryVariant
 {
+    #[cfg(feature = "factory")]
     Normal,
     Default,
     AsyncDefault,
 }
 
-#[cfg(feature = "factory")]
 pub struct AsyncFactoryProvider
 {
     factory:
@@ -187,7 +183,6 @@ pub struct AsyncFactoryProvider
     variant: AsyncFactoryVariant,
 }
 
-#[cfg(feature = "factory")]
 impl AsyncFactoryProvider
 {
     pub fn new(
@@ -201,7 +196,6 @@ impl AsyncFactoryProvider
     }
 }
 
-#[cfg(feature = "factory")]
 #[async_trait]
 impl<DIContainerT> IAsyncProvider<DIContainerT> for AsyncFactoryProvider
 where
@@ -214,6 +208,7 @@ where
     ) -> Result<AsyncProvidable<DIContainerT>, InjectableError>
     {
         Ok(match self.variant {
+            #[cfg(feature = "factory")]
             AsyncFactoryVariant::Normal => AsyncProvidable::Factory(self.factory.clone()),
             AsyncFactoryVariant::Default => {
                 AsyncProvidable::DefaultFactory(self.factory.clone())
@@ -230,7 +225,6 @@ where
     }
 }
 
-#[cfg(feature = "factory")]
 impl Clone for AsyncFactoryProvider
 {
     fn clone(&self) -> Self

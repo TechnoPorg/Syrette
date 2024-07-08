@@ -110,10 +110,8 @@ pub mod private;
 mod provider;
 mod util;
 
-#[cfg(feature = "factory")]
 mod castable_factory;
 
-#[cfg(feature = "factory")]
 mod any_factory;
 
 #[cfg(test)]
