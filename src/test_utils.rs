@@ -301,7 +301,7 @@ pub mod mocks
     }
 }
 
-#[cfg(all(feature = "async", feature = "factory"))]
+#[cfg(feature = "async")]
 macro_rules! async_closure {
     (|$($args: ident),*| { $($inner: stmt);* }) => {
         Box::new(|$($args),*| {
@@ -310,10 +310,10 @@ macro_rules! async_closure {
     };
     (|| { $($inner: stmt);* }) => {
         Box::new(|| {
-            Box::pin(async move { $($inner)* })
+            Box::new(async move { $($inner)* })
         })
     };
 }
 
-#[cfg(all(feature = "async", feature = "factory"))]
+#[cfg(feature = "async")]
 pub(crate) use async_closure;

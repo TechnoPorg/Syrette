@@ -610,7 +610,6 @@ mod tests
     }
 
     #[tokio::test]
-    #[cfg(feature = "factory")]
     async fn can_get_factory()
     {
         trait IUserManager: Send + Sync
@@ -692,7 +691,6 @@ mod tests
     }
 
     #[tokio::test]
-    #[cfg(feature = "factory")]
     async fn can_get_factory_named()
     {
         trait IUserManager: Send + Sync

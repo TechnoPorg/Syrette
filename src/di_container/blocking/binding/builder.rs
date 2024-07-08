@@ -367,7 +367,6 @@ mod tests
     }
 
     #[test]
-    #[cfg(feature = "factory")]
     fn can_bind_to_default_factory()
     {
         use crate::ptr::TransientPtr;

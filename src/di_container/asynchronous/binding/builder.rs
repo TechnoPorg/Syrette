@@ -595,7 +595,6 @@ mod tests
     }
 
     #[tokio::test]
-    #[cfg(feature = "factory")]
     async fn can_bind_to_default_factory()
     {
         use crate::ptr::TransientPtr;
@@ -633,7 +632,6 @@ mod tests
     }
 
     #[tokio::test]
-    #[cfg(feature = "factory")]
     async fn can_bind_to_async_default_factory()
     {
         use crate::ptr::TransientPtr;

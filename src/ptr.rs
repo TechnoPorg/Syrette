@@ -63,14 +63,12 @@ where
     Singleton(SingletonPtr<Interface>),
 
     /// A smart pointer to a factory.
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     Factory(FactoryPtr<Interface>),
 
     /// A smart pointer to a interface in the singleton scope.
     ThreadsafeSingleton(ThreadsafeSingletonPtr<Interface>),
 
     /// A smart pointer to a factory.
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     ThreadsafeFactory(ThreadsafeFactoryPtr<Interface>),
 }
 
@@ -86,8 +84,6 @@ where
         SomePtr,
         Factory,
         SomePtrError,
-        cfg(feature = "factory"),
-        cfg_attr(doc_cfg, doc(cfg(feature = "factory")))
     );
 
     create_as_variant_fn!(SomePtr, ThreadsafeSingleton, SomePtrError);
@@ -96,7 +92,5 @@ where
         SomePtr,
         ThreadsafeFactory,
         SomePtrError,
-        cfg(feature = "factory"),
-        cfg_attr(doc_cfg, doc(cfg(feature = "factory")))
     );
 }
