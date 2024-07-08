@@ -317,16 +317,6 @@ mod tests
             AsyncFactoryVariant::Normal,
         );
 
-        let default_factory_provider = AsyncFactoryProvider::new(
-            ThreadsafeFactoryPtr::new(FooFactory),
-            AsyncFactoryVariant::Default,
-        );
-
-        let async_default_factory_provider = AsyncFactoryProvider::new(
-            ThreadsafeFactoryPtr::new(FooFactory),
-            AsyncFactoryVariant::AsyncDefault,
-        );
-
         let di_container = MockAsyncDIContainer::new();
 
         assert!(
@@ -339,6 +329,40 @@ mod tests
             ),
             "The provided type is not a factory"
         );
+    }
+
+    #[tokio::test]
+    async fn async_default_factory_provider_works()
+    {
+        use std::any::Any;
+
+        use crate::any_factory::{AnyFactory, AnyThreadsafeFactory};
+        use crate::ptr::ThreadsafeFactoryPtr;
+
+        #[derive(Debug)]
+        struct FooFactory;
+
+        impl AnyFactory for FooFactory
+        {
+            fn as_any(&self) -> &dyn Any
+            {
+                self
+            }
+        }
+
+        impl AnyThreadsafeFactory for FooFactory {}
+
+        let default_factory_provider = AsyncFactoryProvider::new(
+            ThreadsafeFactoryPtr::new(FooFactory),
+            AsyncFactoryVariant::Default,
+        );
+
+        let async_default_factory_provider = AsyncFactoryProvider::new(
+            ThreadsafeFactoryPtr::new(FooFactory),
+            AsyncFactoryVariant::AsyncDefault,
+        );
+
+        let di_container = MockAsyncDIContainer::new();
 
         assert!(
             matches!(
