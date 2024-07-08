@@ -3,7 +3,6 @@ use std::any::type_name;
 use std::marker::PhantomData;
 
 use crate::di_container::blocking::binding::scope_configurator::BindingScopeConfigurator;
-#[cfg(feature = "factory")]
 use crate::di_container::blocking::binding::when_configurator::BindingWhenConfigurator;
 use crate::di_container::BindingOptions;
 use crate::errors::di_container::BindingBuilderError;
@@ -255,8 +254,6 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    #[cfg(feature = "factory")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "factory")))]
     pub fn to_default_factory<Return, FactoryFunc>(
         self,
         factory_func: &'static FactoryFunc,
@@ -266,7 +263,7 @@ where
         FactoryFunc: Fn(
             &DIContainer,
         ) -> crate::ptr::TransientPtr<
-            dyn Fn<(), Output = crate::ptr::TransientPtr<Return>>,
+            dyn Fn() -> crate::ptr::TransientPtr<Return>,
         >,
     {
         use crate::castable_factory::CastableFactory;

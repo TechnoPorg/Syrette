@@ -14,7 +14,6 @@ pub enum Providable<DIContainerType>
     Singleton(SingletonPtr<dyn Injectable<DIContainerType>>),
     #[cfg(feature = "factory")]
     Factory(crate::ptr::FactoryPtr<dyn crate::any_factory::AnyFactory>),
-    #[cfg(feature = "factory")]
     DefaultFactory(crate::ptr::FactoryPtr<dyn crate::any_factory::AnyFactory>),
 }
 
@@ -105,25 +104,39 @@ where
     }
 }
 
-#[cfg(feature = "factory")]
 pub struct FactoryProvider
 {
     factory: crate::ptr::FactoryPtr<dyn crate::any_factory::AnyFactory>,
+    #[cfg(feature = "factory")]
     is_default_factory: bool,
 }
 
-#[cfg(feature = "factory")]
 impl FactoryProvider
 {
     pub fn new(
         factory: crate::ptr::FactoryPtr<dyn crate::any_factory::AnyFactory>,
+        #[allow(unused)]
         is_default_factory: bool,
     ) -> Self
     {
         Self {
             factory,
+            #[cfg(feature = "factory")]
             is_default_factory,
         }
+    }
+}
+
+#[cfg(not(feature = "factory"))]
+impl<DIContainerType> IProvider<DIContainerType> for FactoryProvider
+{
+    fn provide(
+        &self,
+        _di_container: &DIContainerType,
+        _dependency_history: DependencyHistory,
+    ) -> Result<Providable<DIContainerType>, InjectableError>
+    {
+        Ok(Providable::DefaultFactory(self.factory.clone()))
     }
 }
 

@@ -297,7 +297,6 @@ impl DIContainer
 
                 Ok(SomePtr::Factory(factory.call(self).into()))
             }
-            #[cfg(feature = "factory")]
             Providable::DefaultFactory(factory_binding) => {
                 use crate::castable_factory::CastableFactory;
                 use crate::ptr::TransientPtr;
